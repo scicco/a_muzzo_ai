@@ -1,0 +1,5 @@
+---
+:roles:
+  - [DEFENDER, DEFENDER]
+  - [ATTACKER, ATTACKER]
+:indifferent: [INDIFFERENT, INDIFFERENT]
