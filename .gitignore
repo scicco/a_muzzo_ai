@@ -1,7 +1,10 @@
 jokes.yml
+jokes_old.yml
 votes.yml
 roles.yml
 responses.csv
+responses_ori.csv
+forbidden_couples.yml
 .idea
 music.mp3
 run.sh

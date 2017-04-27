@@ -149,6 +149,18 @@ module A
           (sum >= @min_strength_bound and sum <= @max_strength_bound)
         end
         
+        def is_a_forbidden_couple(couple)
+          forbidden = false
+          couple_obj = Couple.new(couple[0], couple[1])
+          @forbidden_couples.each do |forbidden_couple|
+            if couple_obj.has_same_player_name?(forbidden_couple)
+              forbidden = true
+              break
+            end
+          end
+          forbidden
+        end
+        
         def dedup_couples(couples)
           cleaned = []
           couples.each do |couple|
@@ -173,6 +185,7 @@ module A
         end
         
         def print_joke
+          return if @jokes.nil?
           joke = @jokes.shuffle.pop
           @jokes = @jokes - [joke]
           puts joke
@@ -186,6 +199,7 @@ module A
             next if couple[0][:role].to_s != @indifferent_role[0] and couple[0][:role] == couple[1][:role]
             next if couple[0][:name] == couple[1][:name]
             next unless check_strength(couple[0], couple[1], percentile)
+            next if is_a_forbidden_couple(couple)
             couples << couple
           end
           
@@ -238,8 +252,11 @@ module A
         
         
         def load_jokes_stuff
-          @joke_file = YAML.load_file('jokes.yml')
-          @jokes = @joke_file[:jokes]
+          begin
+            @joke_file = YAML.load_file('jokes.yml')
+            @jokes = @joke_file[:jokes]
+          rescue Errno::ENOENT
+          end
           @do_jokes = (!@jokes.nil? and @jokes.size > 0)
         end
         
@@ -258,6 +275,17 @@ module A
           @roles << @indifferent_role
         end
         
+        def load_forbidden_couples
+          @forbidden_couples_file = YAML.load_file('forbidden_couples.yml')
+          forbidden_couples = @forbidden_couples_file[:couples]
+          pp forbidden_couples
+          @forbidden_couples = []
+          forbidden_couples.each do |forbidden_couple|
+            @forbidden_couples << Couple.new({name: forbidden_couple[0]}, {name: forbidden_couple[1]})
+          end
+          @forbidden_couples
+        end
+        
         def start(number_of_players)
           number_of_players ||= 16
           @players = []
@@ -267,6 +295,7 @@ module A
           load_jokes_stuff
           load_votes
           load_roles
+          load_forbidden_couples
           
           @players = collect_player_names
           
