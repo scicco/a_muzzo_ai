@@ -45,7 +45,7 @@ Notes:
 
 >If using different weights please adjust @min_strength_bound and @max_strength_bound variables inside shuffler.rb start method (defaults are 6 and 12)
 
-###Run
+### Run
 
 Run with 
 ```shell
@@ -55,6 +55,6 @@ ruby runner.rb <NUMBER OF PLAYERS>
 
 Enjoy!
 
-###License
+### License
 
 MIT
