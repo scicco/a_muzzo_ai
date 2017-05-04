@@ -216,7 +216,7 @@ module A
             progressbar.increment
             
             scenario = generate_scenario(couples)
-            next unless scenario.size == 8
+            next unless scenario.size == (@number_of_players / 2)
             scenario_obj = Scenario.new(scenario.map { |couple| Couple.new(couple[0], couple[1]) }, percentile)
             next if scenarios.include?(scenario_obj)
             next if check_existence(scenarios, scenario_obj)
@@ -287,7 +287,7 @@ module A
         end
         
         def start(number_of_players)
-          number_of_players ||= 16
+          number_of_players ||= 18
           @players = []
           @number_of_players = number_of_players
           @filename = 'responses.csv'
@@ -309,8 +309,8 @@ module A
           puts ' The Players are: '
           puts '*' * 80
           @players.each do |player|
-            puts "#{player[:name]}:#{player[:percentile75]}:#{player[:role]}"
-            votes << player[:percentile75]
+            puts "#{player[:name]}:#{player[:percentile98]}:#{player[:role]}"
+            votes << player[:percentile98]
           end
           
           average = votes.inject(&:+) / @number_of_players.to_f
@@ -324,7 +324,7 @@ module A
           puts ''
           average_adjust_factor = average / best_average / 4
           
-          @min_strength_bound = 6
+          @min_strength_bound = 10
           @max_strength_bound = 12
           @min_strength_bound += average_adjust_factor
           @max_strength_bound -= average_adjust_factor
@@ -342,7 +342,7 @@ module A
               results = shuffle_players(@players, percentile_name.to_sym)
               if results.size > 0
                 best_results << results[0..10].sample
-                @min_strength_bound = 6
+                @min_strength_bound = 10
                 @max_strength_bound = 12
                 @min_strength_bound += average_adjust_factor
                 @max_strength_bound -= average_adjust_factor
